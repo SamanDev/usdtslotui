@@ -218,7 +218,7 @@ const BlackjackGame = () => {
             }
         });
         setTimeout(() => {
-            var bet = parseInt($("#betval").text());
+            var bet = parseFloat($("#betval").text());
 
             //console.log(winX);
 
@@ -269,7 +269,7 @@ const BlackjackGame = () => {
 
                 $(".win").removeClass("win");
         var line = $("#lineval").text();
-        var bet = parseInt($("#betval").text());
+        var bet = parseFloat($("#betval").text());
         const payLoad = {
             method: "spin",
             line: line,
