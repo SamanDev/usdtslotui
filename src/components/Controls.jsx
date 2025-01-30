@@ -85,7 +85,7 @@ const GetControls = ({ balance, animateNum }) => {
                 <div className="boxcontrol">
                     <LinesButtons valFunc={line} setFunc={setLine} valSum={1} max={15} />
                     <Label image size="large"  color="olive">
-                    <span className="counter" data-count={line}>{line}</span>
+                    <span className="counter notcount" data-count={line}>{line}</span>
                     <span id="lineval" style={{display:'none'}}>{line}</span>
                         <LabelDetail>Line</LabelDetail>
                     </Label>

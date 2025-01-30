@@ -20,8 +20,8 @@ const r2 = [0, 4, 4, 2, 3, 0, 1, 3, 3, 1, 2, 0, 3, 0, 6, 2, 1, 0, 1, 1, 0, 1, 0,
 const r3 = [1, 3, 0, 0, 4, 4, 1, 0, 1, 2, 1, 0, 2, 0, 0, 0, 3, 6, 4, 0, 4, 0, 6, 5, 1, 0, 3, 2, 5, 3, 0, 0, 0, 1, 0, 2, 1, 1, 1, 1, 2, 0, 1, 3, 3, 0, 3, 1, 0, 0, 0, 1, 2, 2, 0, 5, 3, 1, 2, 2, 2, 2];
 const rewardsList = [300, 100, 50, 20, 10, 5, 3, 2, 1];
 
-const doCurrency = (value) => {
-    let val = value?.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
+const doCurrency = (value,fix) => {
+    var val = parseFloat(value).toFixed(fix || fix == 0 ? fix : 0)?.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
     return val;
 };
 
@@ -32,7 +32,7 @@ function animateNum() {
             countTo = $this.attr("data-count"),
             countFrom = $this.attr("start-num") ? $this.attr("start-num") : parseInt($this.text().replace(/,/g, ""));
 
-        if (countTo != countFrom && !$this.hasClass("doing")) {
+        if (countTo != countFrom && !$this.hasClass("doing") && !$this.hasClass("notcount")) {
             $this.attr("start-num", countFrom);
             // $this.addClass("doing");
 
@@ -47,10 +47,10 @@ function animateNum() {
 
                     step: function () {
                         //$this.attr('start-num',Math.floor(this.countNum));
-                        $this.text(doCurrency(Math.floor(this.countNum)));
+                        $this.text(doCurrency((this.countNum),2));
                     },
                     complete: function () {
-                        $this.text(doCurrency(this.countNum));
+                        $this.text(doCurrency(this.countNum,2));
                         $this.attr("start-num", Math.floor(this.countNum));
                         //$this.removeClass("doingdoing");
                         //alert('finished');
@@ -58,13 +58,18 @@ function animateNum() {
                 }
             );
         } else {
+            if ($this.hasClass("notcount")) {
+                $this.text(doCurrency(countTo));
+            }else{
             if ($this.hasClass("doing")) {
                 $this.attr("start-num", countFrom);
                 $this.removeClass("doing");
             } else {
-                $this.text(doCurrency(countFrom));
+                $this.text(doCurrency(countFrom,2));
                 $this.attr("start-num", countFrom);
+                
             }
+        }
         }
     });
 }
