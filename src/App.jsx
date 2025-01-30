@@ -30,7 +30,7 @@ function animateNum() {
     $(".counter").each(function () {
         var $this = $(this),
             countTo = $this.attr("data-count"),
-            countFrom = $this.attr("start-num") ? $this.attr("start-num") : parseInt($this.text().replace(/,/g, ""));
+            countFrom = $this.attr("start-num") ? $this.attr("start-num") : parseFloat($this.text().replace(/,/g, ""));
 
         if (countTo != countFrom && !$this.hasClass("doing") && !$this.hasClass("notcount")) {
             $this.attr("start-num", countFrom);
@@ -51,7 +51,7 @@ function animateNum() {
                     },
                     complete: function () {
                         $this.text(doCurrency(this.countNum,2));
-                        $this.attr("start-num", Math.floor(this.countNum));
+                        $this.attr("start-num", (this.countNum));
                         //$this.removeClass("doingdoing");
                         //alert('finished');
                     },
