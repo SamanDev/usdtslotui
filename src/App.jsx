@@ -15,8 +15,8 @@ if (pathArr.length == 3) {
 }
 //const WEB_URL = process.env.REACT_APP_MODE === "production" ? `wss://${process.env.REACT_APP_DOMAIN_NAME}/` : `ws://${loc.hostname}:8092`;
 //const WEB_URL = `wss://slot.wheelofpersia.com/`;
-const WEB_URL = `ws://${loc.hostname}:8100/slot`;
-//const WEB_URL = `wss://server.wheelofpersia.com/slot`;
+//const WEB_URL = `ws://${loc.hostname}:8100/slot`;
+const WEB_URL = `wss://server.usdtpoker.club/slot`;
 
 const r1 = [5, 1, 0, 1, 4, 2, 2, 4, 2, 0, 3, 0, 0, 3, 0, 3, 1, 1, 0, 0, 2, 1, 0, 1, 0, 2, 1, 0, 2, 0, 3, 0, 0, 5, 2, 1, 2, 1, 0, 6, 2, 1, 1, 2, 1, 2, 3, 4, 4, 6, 3, 1, 0, 3, 0, 0, 5, 0, 0, 0, 3, 1];
 const r2 = [0, 4, 4, 2, 3, 0, 1, 3, 3, 1, 2, 0, 3, 0, 6, 2, 1, 0, 1, 1, 0, 1, 0, 2, 0, 0, 4, 0, 3, 0, 1, 5, 4, 1, 5, 1, 1, 2, 0, 0, 3, 0, 1, 0, 2, 0, 0, 3, 0, 2, 2, 2, 6, 0, 1, 5, 2, 2, 1, 0, 1, 3];
