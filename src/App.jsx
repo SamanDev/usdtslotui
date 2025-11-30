@@ -11,119 +11,115 @@ const loc = new URL(window.location);
 const pathArr = loc.pathname.toString().split("/");
 
 if (pathArr.length == 3) {
-    _auth = pathArr[1];
+    _auth = pathArr[1] + "___" + pathArr[2];
 }
 //const WEB_URL = process.env.REACT_APP_MODE === "production" ? `wss://${process.env.REACT_APP_DOMAIN_NAME}/` : `ws://${loc.hostname}:8092`;
-const WEB_URL = `wss://mslot.usdtpoker.club/`;
+//const WEB_URL = `wss://slot.wheelofpersia.com/`;
+const WEB_URL = `ws://${loc.hostname}:8100/slot`;
+//const WEB_URL = `wss://server.wheelofpersia.com/slot`;
+
 const r1 = [5, 1, 0, 1, 4, 2, 2, 4, 2, 0, 3, 0, 0, 3, 0, 3, 1, 1, 0, 0, 2, 1, 0, 1, 0, 2, 1, 0, 2, 0, 3, 0, 0, 5, 2, 1, 2, 1, 0, 6, 2, 1, 1, 2, 1, 2, 3, 4, 4, 6, 3, 1, 0, 3, 0, 0, 5, 0, 0, 0, 3, 1];
 const r2 = [0, 4, 4, 2, 3, 0, 1, 3, 3, 1, 2, 0, 3, 0, 6, 2, 1, 0, 1, 1, 0, 1, 0, 2, 0, 0, 4, 0, 3, 0, 1, 5, 4, 1, 5, 1, 1, 2, 0, 0, 3, 0, 1, 0, 2, 0, 0, 3, 0, 2, 2, 2, 6, 0, 1, 5, 2, 2, 1, 0, 1, 3];
 const r3 = [1, 3, 0, 0, 4, 4, 1, 0, 1, 2, 1, 0, 2, 0, 0, 0, 3, 6, 4, 0, 4, 0, 6, 5, 1, 0, 3, 2, 5, 3, 0, 0, 0, 1, 0, 2, 1, 1, 1, 1, 2, 0, 1, 3, 3, 0, 3, 1, 0, 0, 0, 1, 2, 2, 0, 5, 3, 1, 2, 2, 2, 2];
 const rewardsList = [300, 100, 50, 20, 10, 5, 3, 2, 1];
 
-const doCurrency = (value,fix) => {
-    var val = parseFloat(value).toFixed(fix || fix == 0 ? fix : 0)?.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
+const doCurrency = (value,sign) => {
+    let val = value?.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
+    if(sign){
+        val = parseFloat(value).toFixed(2)?.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
+        return "$"+val;
+    }
     return val;
 };
 
 
-function animateNum() {
-    $(".counter").each(function () {
-        var $this = $(this),
-            countTo = $this.attr("data-count"),
-            countFrom = $this.attr("start-num") ? $this.attr("start-num") : parseFloat($this.text().replace(/,/g, ""));
+function useScale(rootId = "root", scaleId = "scale", conn) {
 
-        if (countTo != countFrom && !$this.hasClass("doing") && !$this.hasClass("notcount")) {
-            $this.attr("start-num", countFrom);
+    useEffect(() => {
+
+        const doScale = () => {
+            try {
+                const root = document.getElementById(rootId);
+                const scaleEl = document.getElementById(scaleId);
+
+                if (!root || !scaleEl) return;
+                const gWidth = root.clientWidth / 1400;
+                const gHeight = root.clientHeight / 735;
+                let scale = Math.min(gWidth, gHeight);
+
+                if (scale > 1) scale = 1;
+                // center translation to keep proportions (approximate)
+
+
+
+                const target = 685 - gHeight;
+                let t = (730 - target) / 2;
+                scaleEl.style.transform = `scale(${scale}) translateY(${t}px)`;
+
+            } catch (e) {
+                // ignore
+            }
+        };
+        window.addEventListener("resize", doScale);
+        window.addEventListener("orientationchange", doScale);
+        // initial
+
+        setTimeout(doScale, 50);
+
+
+
+        return () => {
+            window.removeEventListener("resize", doScale);
+            window.removeEventListener("orientationchange", doScale);
+        };
+    }, [ conn]);
+
+}
+function animateNum() {
+    $('.counter').each(function () {
+        var $this = $(this),
+            sign = typeof $this.attr('data-sign') == 'undefined'||$this.attr('data-sign') == 'false'?true:false,
+            countTo = parseFloat($this.attr('data-count')).toFixed(2),
+            countFrom = $this.attr('start-num') ? parseFloat($this.attr('start-num')).toFixed(2) : parseFloat($this.text().replace(/,/g, "")).toFixed(2);
+
+
+        if (countTo != countFrom && !$this.hasClass('doing')) {
+            $this.attr('start-num', countFrom);
             // $this.addClass("doing");
 
-            $({ countNum: countFrom }).animate(
-                {
-                    countNum: countTo,
-                },
+            $({ countNum: countFrom }).animate({
+                countNum: countTo
+            },
 
                 {
+
                     duration: 400,
-                    easing: "linear",
+                    easing: 'linear',
 
                     step: function () {
                         //$this.attr('start-num',Math.floor(this.countNum));
-                        $this.text(doCurrency((this.countNum),2));
+                        $this.text(doCurrency(Math.abs(this.countNum),sign));
                     },
                     complete: function () {
-                        $this.text(doCurrency(this.countNum,2));
-                        $this.attr("start-num", (this.countNum));
-                        //$this.removeClass("doingdoing");
+                        $this.text(doCurrency(this.countNum,sign));
+                        $this.attr('start-num', parseFloat(Math.abs(this.countNum)).toFixed(2));
+                        //$this.removeClass("doing");
                         //alert('finished');
-                    },
-                }
-            );
+                    }
+
+                });
+
+
         } else {
-            if ($this.hasClass("notcount")) {
-                $this.text(doCurrency(countTo));
-            }else{
-            if ($this.hasClass("doing")) {
-                $this.attr("start-num", countFrom);
+            if ($this.hasClass('doing')) {
+                $this.attr('start-num', countFrom);
                 $this.removeClass("doing");
             } else {
-                $this.text(doCurrency(countFrom,2));
-                $this.attr("start-num", countFrom);
-                
+                $this.attr('start-num', countFrom);
             }
-        }
         }
     });
 }
-const AppOrtion = () => {
-    let gWidth = $("#root").width() / 1000;
-    let gHight = $("#root").height() / 650;
-    let scale = gWidth < gHight ? gWidth : gHight;
-    let highProtect = $("#root").height() * scale;
-    //console.log($("#root").width(),$("#root").height());
-    // console.log(gWidth,gHight,scale);
-
-    if (highProtect > 850) {
-        //console.log(gWidth,gHight,highProtect);
-        //gHight = $("#root").height() / 850;
-        // scale = (scale + gHight)/2;
-        scale = gHight;
-        highProtect = $("#root").height() * scale;
-        let _t = ($("#root").height() - highProtect) / 2;
-        if (_t < 0) {
-            _t = _t * -1;
-        }
-
-        if (scale < 1) {
-            setTimeout(() => {
-                $("#scale").css("transform", "scale(" + scale + ")");
-            }, 10);
-        } else {
-            scale = 1;
-            setTimeout(() => {
-                $("#scale").css("transform", "scale(" + scale + ") translateY(" + _t + "px)");
-            }, 10);
-        }
-    } else {
-        // gHight = $("#root").height() / 850;
-        // scale = (scale + gHight)/2;
-        //  scale = gHight;
-        let _t = ($("#root").height() - highProtect) / 2;
-        if (_t < 0) {
-            _t = _t * -1;
-        }
-        if (scale < 1) {
-            setTimeout(() => {
-                $("#scale").css("transform", "scale(" + scale + ") translateY(" + _t + "px)");
-            }, 10);
-        } else {
-            scale = 1;
-            setTimeout(() => {
-                $("#scale").css("transform", "scale(" + scale + ") translateY(" + _t + "px)");
-            }, 10);
-        }
-    }
-
-    // console.log(gWidth,highProtect,gHight,scale)
-};
 const socket = new WebSocket(WEB_URL, _auth);
 window.addEventListener("message", function (event) {
     if (event?.data?.username) {
@@ -137,26 +133,18 @@ window.addEventListener("message", function (event) {
         } catch (error) {}
     }
 });
-let supportsOrientationChange = "onorientationchange" in window,
-    orientationEvent = supportsOrientationChange ? "orientationchange" : "resize";
 
-window.addEventListener(
-    orientationEvent,
-    function () {
-        AppOrtion();
-    },
-    false
-);
 window.parent.postMessage("userget", "*");
 
-if (window.self == window.top) {
-    //window.location.href = "https://www.google.com/";
+if (window.self === window.top && WEB_URL.indexOf("localhost")==-1) {
+    window.location.href = "https://www.google.com/";
 }
 const BlackjackGame = () => {
     const [userData, setUserData] = useState(null);
 
    
-    const [conn, setConn] = useState(true);
+    const [conn, setConn] = useState(false);
+    useScale("root", "scale",  conn);
     function getCols(reels) {
         var cols = [];
         cols.push([reels[0] - 1, reels[1] - 1, reels[2] - 1]);
@@ -218,7 +206,7 @@ const BlackjackGame = () => {
             }
         });
         setTimeout(() => {
-            var bet = parseFloat($("#betval").text());
+            var bet = parseFloat($("#betval").text()).toFixed(2);
 
             //console.log(winX);
 
@@ -269,7 +257,7 @@ const BlackjackGame = () => {
 
                 $(".win").removeClass("win");
         var line = $("#lineval").text();
-        var bet = parseFloat($("#betval").text());
+        var bet = parseFloat($("#betval").text()).toFixed(2);
         const payLoad = {
             method: "spin",
             line: line,
@@ -335,15 +323,20 @@ const BlackjackGame = () => {
                 }, 3500);
             }
             if (data.method == "connect") {
+                setConn(true);
                 if (data.theClient?.balance >= 0) {
                     setUserData(data.theClient);
                     animateNum()
                 } else {
                     setUserData(data.theClient);
-                    // setConn(false);
+                    // 
                     //_auth = null;
                     animateNum()
                 }
+                setInterval(() => {
+
+                    socket.send(JSON.stringify({ method: "ping" }));
+                }, 15000);
                 // Update kardan state
             }
         };
@@ -352,11 +345,11 @@ const BlackjackGame = () => {
         socket.onclose = () => {
             console.log("WebSocket closed");
             setConn(false);
-            _auth = null;
+            
         };
         setTimeout(() => {
             $('.fload').remove()
-            AppOrtion();
+        
 
             $(".go").removeClass('disabled').on("click", function () {
                 spin();
@@ -370,24 +363,19 @@ const BlackjackGame = () => {
        
     }, []);
 
-    if (_auth == null || !conn || !userData) {
+    if ( !conn || !userData) {
        // return <>hi</>
         return <Loaderr errcon={!userData ? false : true} />;
+   
     }
 
     return (
         <>
-        <span className="fload"><Dimmer active>
-            
-                <Loader size="huge" />
-            
-        </Dimmer></span>
-            <span id="dark-overlay"></span>
             <div>
                 <div className="game-room" id="scale">
                     <div className="flex">
                         <div className="box">
-                            <Controls balance={userData.balance} animateNum={animateNum} />
+                            <Controls balance={userData.balance} doCurrency={doCurrency} animateNum={animateNum} />
                         </div>
                         <div className="box">
                             <Reels  />

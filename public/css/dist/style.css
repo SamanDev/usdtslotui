@@ -16,20 +16,25 @@ html {
 }
 
 body {
-  background: #2d1135 ;
-  
+background:  #262a2b ;
+ 
+font-size: 22px !important;
   padding: 0;
   margin: 0;
   opacity: 1;
+  transition: background .5s ease;
 }
+
+
 .flex {
+  position: relative;
   display: grid;
   grid-auto-flow: column;
   grid-gap: 0px;
-  margin: 0 100px;
+  margin: 0px 100px;
   grid-template-columns: 40% 60%;
   background: #1b1c1d;
-  
+
 }
 
 .list img {
@@ -62,8 +67,8 @@ body {
   margin-top: -50px;
 }
 .flexcontrol .counter{
-  width: 110px;
-  display: inline-block;
+  width: 115px;
+    display: inline-block;
 }
 .flexcontrol .detail{
   width: 90px;
@@ -102,7 +107,7 @@ body {
 }
 .auto{
   position: absolute !important;
-  margin-top: -35px;
+  margin-top: -39px;
   margin-left: 10px;
 }
 .boxcontrol{
@@ -112,7 +117,14 @@ body {
   background:  rgba(255, 255,255,.2) !important;
 }
 .rewardlist [class*="right floated"]{
-  line-height: 26px !important;
+  line-height: 42px !important;
+}
+.bottomControll{
+ position: absolute;
+    right: 8px;
+    bottom: 30px;
+    margin: 0 auto;
+    width: 704px;
 }
 .reels {
   display: grid;
@@ -168,26 +180,20 @@ body {
     transform: rotateZ(1500deg);
   }
 }
-#loading-screen {
-  position: fixed;
-  padding: 0;
-  margin: 0;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: radial-gradient(#38833c, #1e421f);
-  z-index: 101;
-}
+
 
 
 .game-room {
-  height: 100%;
-  transition: all .1s ease;
-  min-height: 750px !important;
-  transform-origin: top;
+  
+  opacity: 0;
+  transition: transform .5s ease, opacity .1s ease;
+  height: 685px !important;
+  
 }
-
+.game-room[style] {
+  opacity: 1;
+  
+}
 #users-online-box {
   position: absolute;
   width: 220px;
@@ -362,13 +368,24 @@ body {
 .modal.tiny *{
   font-size: 96% !important;
 }
-.myloading,.myloading *:not(i):not(br){
-  position: absolute !important;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background:transparent !important
+.myloading {
+  background: transparent !important;
+ 
+  position: relative !important;
+
+}
+.glass{
+/* From https://css.glass */
+background: rgba(185, 185, 185, 0.1);
+border-radius: 16px;
+box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+backdrop-filter: blur(3.2px);
+-webkit-backdrop-filter: blur(3.2px);
+border: 1px solid rgba(185, 185, 185, 0.49);
+height: 550px;
+    overflow: hidden;
+    z-index: 1;
+    margin: 0 10px;
 }
 #leave-table {
   position: absolute;
@@ -528,6 +545,10 @@ body {
     margin-top: -62px;
     
 }
+.go{
+  font-size: 25px !important;
+    
+}
 ul{
   list-style-type: none;
   margin-inline-start: 30px;
@@ -556,20 +577,24 @@ ul li{
   z-index: 10;
 }
 #root {
-  height: 100vh;
+ 
+  height: 100dvh;
    
     width: 100vw;
     overflow: hidden;
 }
+#root *{
+  user-select: none;
+}
 
-#root > div{
-  height: 750px;
+#root > div {
+  height: 685px;
   position: relative;
   width: 1400px;
-  top: -10px;
+  top: 50%;
   left: 50%;
-  transform: translateX(-50%);
-  transform-origin: top center;
+  transform: translateX(-50%) translateY(-50%);
+  transform-origin: center;
 }
 
 .grid-container {

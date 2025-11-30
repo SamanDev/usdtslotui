@@ -79,15 +79,19 @@ const ShowReels = ({ reel }) => (
 
 const Reels = () => (
     <Segment inverted className="reels">
-        <div className="flexreels r1" style={{ top: 0 }}>
+        <div className="glass">
+             <div className="flexreels r1" style={{ top: 0 }}>
             <ShowReels reel={r1} />
         </div>
+        </div>
+        <div className="glass">
         <div className="flexreels r2" style={{ top: 0 }}>
             <ShowReels reel={r2} />
-        </div>
+        </div></div>
+        <div className="glass">
         <div className="flexreels r3" style={{ top: 0 }}>
             <ShowReels reel={r3} />
-        </div>
+        </div></div>
         <Lines />
     </Segment>
 );

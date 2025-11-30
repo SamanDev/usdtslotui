@@ -18,7 +18,7 @@ const rewardsListIcon = [
 const Rewards = ({ bet }) => {
     return (
         <Segment inverted className="rewardlist">
-            <List divided inverted verticalAlign="middle">
+            <List divided inverted verticalAlign="middle" size="huge">
                 {rewardsListCount.map(function (x, i) {
                     return (
                         <ListItem key={i} className={"listreward lr" + rewardsListIcon[i][0]}>
@@ -29,7 +29,7 @@ const Rewards = ({ bet }) => {
                                 <ListHeader>x{x}</ListHeader>
                             </ListContent>
                             <ListContent floated="right">
-                                <ListHeader className="counter" data-count={x * bet}></ListHeader>
+                                <ListHeader className="counter" data-count={parseFloat(x * bet).toFixed(2)}></ListHeader>
                             </ListContent>
                         </ListItem>
                     );
@@ -41,12 +41,12 @@ const Rewards = ({ bet }) => {
 
 
 
-const GetControls = ({ balance, animateNum }) => {
+const GetControls = ({ balance, animateNum, doCurrency }) => {
     const [line, setLine] = useState(15);
-    const [bet, setBet] = useState(0.5);
+    const [bet, setBet] = useState(0.1);
     useEffect(() => {
         animateNum();
-    }, [bet,line]);
+    }, [bet, line]);
     useEffect(() => {
         $(".lines img").hide();
         for (let i = 1; i <= line; i++) {
@@ -54,59 +54,58 @@ const GetControls = ({ balance, animateNum }) => {
         }
     }, [line]);
     return (
-        <Segment inverted>
-            <div className="balance">
-             <Label image size="huge" color="black">
+        <>
+            <Segment inverted>
+                <div className="balance">
+                    <Label image size="huge" color="black">
                         <span className="counter" data-count={balance}></span>
                         <LabelDetail>Balance</LabelDetail>
                     </Label></div>
-            <div className="flexcontrol">
-                
-                <div className="boxcontrol">
-                    <Label image size="large"  color="teal">
-                        <span className="counter" data-count={bet * line}></span>
-                        <LabelDetail>Total Bet</LabelDetail>
-                    </Label>
-                </div>
-                <div className="boxcontrol">
-                    <Label image size="large"  color="red">
-                        <span className="counter" id="totalwin" data-count={0}></span>
-                        <LabelDetail>Total Win</LabelDetail>
-                    </Label>
-                </div>
-            </div>
+                <div className="flexcontrol">
 
-            <Rewards bet={bet} />
-            <Button className="go disabled" color="orange" size="huge" fluid disabled={bet * line> balance?true:false}>
-                Start Spinning...
-            </Button>
-            <Checkbox label='AUTO SPIN' id="autospin" className="auto" />
-            <div className="flexcontrol">
+                    <div className="boxcontrol">
+                        <Label image size="huge" color="teal">
+                            <span className="counter" data-count={bet * line}></span>
+                            <LabelDetail>Bet</LabelDetail>
+                        </Label>
+                    </div>
+                    <div className="boxcontrol">
+                        <Label image size="huge" color="red">
+                            <span className="counter" id="totalwin"  data-count={0}></span>
+                            <LabelDetail>Win</LabelDetail>
+                        </Label>
+                    </div>
+                </div>
+
+                <Rewards bet={bet} />
+                <Button className="go" color="orange" size="huge" fluid disabled={bet * line > balance ? true : false}>
+                    Start Spinning...
+                </Button>
+                <Checkbox label='AUTO SPIN' id="autospin" className="auto" />
+
+            </Segment>
+            <div className="flexcontrol bottomControll">
                 <div className="boxcontrol">
-                    <LinesButtons valFunc={line} setFunc={setLine} valSum={1} max={15} />
-                    <Label image size="large"  color="olive">
-                    <span className="counter notcount" data-count={line}>{line}</span>
-                    <span id="lineval" style={{display:'none'}}>{line}</span>
-                        <LabelDetail>Line</LabelDetail>
-                    </Label>
+                    <LinesButtons valFunc={line} setFunc={setLine} valSum={1} min={1} max={15} text="Line" color="olive" id="lineval"/>
+
                 </div>
                 <div className="boxcontrol">
-                    <LinesButtons valFunc={bet} setFunc={setBet} valSum={.5} max={.5 * 20} />
-                    <Label image size="large"  color="pink">
-                        <span className="counter" data-count={bet}></span>
-                        <span id="betval" style={{display:'none'}}>{bet}</span>
-                        <LabelDetail>Bet</LabelDetail>
-                    </Label>
+                    <LinesButtons valFunc={bet} setFunc={setBet} valSum={0.1} min={0.1} max={0.1 * 100} text={"Bet"} color="purple" id="betval" />
+                   
                 </div>
             </div>
-        </Segment>
+        </>
     );
 };
-const LinesButtons = ({ setFunc, valFunc, valSum, max }) => (
-    <ButtonGroup widths="3" style={{ padding:7}}>
-        <Button icon="minus" basic color="red" disabled={valFunc <= valSum ? true : false} onClick={() => setFunc(valFunc - valSum)} />
-        <Button icon="plus" basic color="green" disabled={valFunc >= max ? true : false} onClick={() => setFunc(valFunc + valSum)} />
-        <Button basic inverted content="Max" color="purple" floated="right" disabled={valFunc >= max ? true : false} onClick={() => setFunc(max)} />
-    </ButtonGroup>
+const LinesButtons = ({ setFunc, valFunc, valSum,min, max, text,color,id }) => (
+<>
+<ButtonGroup size="huge" color={color}>
+    <Button  icon='minus' disabled={valFunc <= valSum ? true : false} onClick={() => setFunc(valFunc - valSum)}/>
+    <Button basic inverted  color={color}  onClick={() => setFunc(valFunc >= max?min:max)} >{text}: <span className="counter" data-count={valFunc} data-sign={text=='Line'?true:false}></span> <span id={id} style={{ display: 'none' }}>{valFunc}</span></Button>
+    <Button icon='plus' disabled={valFunc >= max ? true : false} onClick={() => setFunc(valFunc + valSum)} />
+  </ButtonGroup>
+</>
+    
+
 );
 export default GetControls;
